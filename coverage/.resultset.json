@@ -1,14 +1,14 @@
 {
   "Unit Tests": {
     "coverage": {
-      "/Users/joshuabaik/Desktop/Turing/Module_1/projects/enigma/lib/enigma.rb": [
+      "/Users/jenniferlao/turing/1module/projects/enigma/enigma/lib/enigma.rb": [
         1,
         1,
         1,
         1,
         null,
         1,
-        6,
+        7,
         null,
         null,
         1,
@@ -49,9 +49,6 @@
         null,
         null,
         null,
-        null,
-        null,
-        0,
         null,
         null,
         1,
@@ -111,9 +108,16 @@
         1,
         null,
         null,
+        1,
+        1,
+        1,
+        6,
+        null,
+        null,
+        null,
         null
       ]
     },
-    "timestamp": 1535220057
+    "timestamp": 1535221484
   }
 }

@@ -50,9 +50,6 @@ class Enigma
     }
   end
 
-  def encrypt(message, key, date)
-
-  end
 
   def key_generator
     rand.to_s[2..6]
@@ -106,5 +103,20 @@ class Enigma
     end
     index_keys
   end
+
+  def message_keys(message)
+    character_array = message.chars
+    reverse = char_map.invert
+    character_array.map do |character|
+      index = reverse [character]
+    end
+  end
+
+  def key_rotation(message)
+    key_index(message).map do |key|
+      total_rotation(key)
+    end
+  end
+binding.pry
 
 end

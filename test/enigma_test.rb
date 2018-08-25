@@ -58,5 +58,9 @@ class EnigmaTest < Minitest::Test
     assert_equal ["A","B","C","D","A"], e.key_index("hello")
   end
 
-  
+  def test_message_keys
+    e = Enigma.new
+    assert_equal [8, 5, 12, 12, 15], e.message_keys("hello")
+  end
+
 end
