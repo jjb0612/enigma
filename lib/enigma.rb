@@ -85,4 +85,26 @@ class Enigma
       squared_array[-1]
     end
   end
+
+  def total_rotation(place)
+    key_rotation(place).to_i + offsets(place).to_i
+  end
+
+  def key_index(message)
+    message_array = message.chars
+    index_keys = []
+    message_array.each_index do |index|
+      if index % 4 == 0
+        index_keys << "A"
+      elsif index % 4 == 1
+        index_keys << "B"
+      elsif index % 4 == 2
+        index_keys << "C"
+      elsif index % 4 == 3
+        index_keys << "D"
+      end
+    end
+    index_keys
+  end
+
 end
