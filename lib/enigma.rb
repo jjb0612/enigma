@@ -71,4 +71,18 @@ class Enigma
     end
   end
 
+  def offsets(place)
+    date = Date.today.strftime("%m%d%y")
+    squared = date.to_i ** 2
+    squared_array = squared.to_s.chars
+    if place == "A"
+      squared_array[-4]
+    elsif place == "B"
+      squared_array[-3]
+    elsif place == "C"
+      squared_array[-2]
+    elsif place == "D"
+      squared_array[-1]
+    end
+  end
 end
