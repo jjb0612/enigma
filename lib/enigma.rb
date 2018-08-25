@@ -50,6 +50,12 @@ class Enigma
     }
   end
 
+  def array
+    array = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+      "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3",
+      "4", "5", "6", "7", "8", "9", "0", " ", ".", ","]
+  end
+
 
   def key_generator
     rand.to_s[2..6]
@@ -83,8 +89,10 @@ class Enigma
     end
   end
 
-  def total_rotation(place)
-    key_rotation(place).to_i + offsets(place).to_i
+  def total_rotation(keys)
+    keys.map do |key|
+      key_rotation(key).to_i + offsets(key).to_i
+    end
   end
 
   def key_index(message)
@@ -112,11 +120,11 @@ class Enigma
     end
   end
 
-  def key_rotation(message)
-    key_index(message).map do |key|
-      total_rotation(key)
-    end
+  def encrypt(message)
+    x = key_index(message)
+    y = total_rotation(x)
   end
+
 binding.pry
 
 end
