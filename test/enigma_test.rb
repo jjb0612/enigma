@@ -1,9 +1,8 @@
+require 'simplecov'
+SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/enigma'
-require 'simplecov'
-SimpleCov.start
-
 class EnigmaTest < Minitest::Test
   def test_enigma_exists
     e = Enigma.new
@@ -45,4 +44,19 @@ class EnigmaTest < Minitest::Test
     actual = e.offsets("D")
     assert_equal "4", actual
   end
+
+  def test_total_rotation
+    e = Enigma.new
+    assert_equal 12, e.total_rotation("A")
+    assert_equal 26, e.total_rotation("B")
+    assert_equal 36, e.total_rotation("C")
+    assert_equal 49, e.total_rotation("D")
+  end
+
+  def test_key_index
+    e = Enigma.new
+    assert_equal ["A","B","C","D","A"], e.key_index("hello")
+  end
+
+  
 end
