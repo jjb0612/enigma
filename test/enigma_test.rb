@@ -14,4 +14,10 @@ class EnigmaTest < Minitest::Test
     e = Enigma.new
     assert_equal "12345", e.key
   end
+
+  def test_key_rotation
+    e = Enigma.new
+    actual = e.key_rotation("A")
+    assert_equal "12", actual
+  end
 end
