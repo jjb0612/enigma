@@ -9,5 +9,9 @@ class EnigmaTest < Minitest::Test
     e = Enigma.new
     assert_instance_of Enigma, e
   end
-end
 
+  def test_it_has_attributes
+    e = Enigma.new
+    assert_equal "12345", e.key
+  end
+end

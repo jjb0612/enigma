@@ -1,10 +1,14 @@
 require 'pry'
 require 'date'
 class Enigma
-  def initialize
-    @key      = rand.to_s[2..6]
-    @char_map = {
-      1 => "a",
+  attr_reader :key
+
+  def initialize (key = "12345")
+    @key      = key
+  end
+
+  def char_map
+    {1 => "a",
       2 => "b",
       3 => "c",
       4 => "d",
@@ -49,4 +53,10 @@ class Enigma
   def encrypt(message, key, date)
 
   end
+
+  def key_generator
+    rand.to_s[2..6]
+  end
+
+
 end
