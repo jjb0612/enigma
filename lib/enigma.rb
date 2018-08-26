@@ -1,11 +1,105 @@
 require 'pry'
 require 'date'
+
 class Enigma
   attr_reader :key
+              :date
 
-  def initialize (key = "12345")
+  def initialize (key = rand.to_s[2..6], date = Date.today.strftime("%m%d%y"))
     @key      = key
+    @date     = date
   end
+
+  def encrypt(message, key = @key, date = @date)
+    keys = get_new_encryption_keys(message, key, date)
+    keys.map do |key|
+      char_map[key]
+    end.join
+  end
+
+  def decrypt(message, key = @key, date = @date)
+    keys = get_new_decryption_keys(message, key, date)
+    keys.map do |key|
+      char_map[key]
+    end.join
+  end
+
+  def get_new_encryption_keys(message, key, date)
+    coded_index = key_index(message)
+    rotation = total_rotation(coded_index, key, date)
+    mapped_keys = message_keys(message)
+    rotation.map.with_index do |m, i|
+      (m + mapped_keys[i].to_i) % 39
+    end
+  end
+
+  def get_new_decryption_keys(message, key, date)
+    coded_index = key_index(message)
+    rotation = total_rotation(coded_index, key, date)
+    mapped_keys = message_keys(message)
+    rotation.map.with_index do |m, i|
+      (mapped_keys[i].to_i - m) % 39
+    end
+  end
+
+  def total_rotation(places, key, date)
+    places.map do |place|
+      key_rotation(place, key).to_i + offsets(place, date).to_i
+    end
+  end
+
+  def key_index(message)
+    message_array = message.chars
+    index_keys = []
+    message_array.each_index do |index|
+      if index % 4 == 0
+        index_keys << "A"
+      elsif index % 4 == 1
+        index_keys << "B"
+      elsif index % 4 == 2
+        index_keys << "C"
+      elsif index % 4 == 3
+        index_keys << "D"
+      end
+    end
+    index_keys
+  end
+
+  def message_keys(message)
+    character_array = message.chars
+    reverse = char_map.invert
+    character_array.map do |character|
+      index = reverse [character]
+    end
+  end
+
+  def key_rotation(place, key)
+    key_array = key.to_s.chars
+    if place == "A"
+      key_array[0] + key_array[1]
+    elsif place == "B"
+      key_array[1] + key_array[2]
+    elsif place == "C"
+      key_array[2] + key_array[3]
+    elsif place == "D"
+      key_array[3] + key_array[4]
+    end
+  end
+
+  def offsets(place, date)
+    squared = date.to_i ** 2
+    squared_array = squared.to_s.chars
+    if place == "A"
+      squared_array[-4]
+    elsif place == "B"
+      squared_array[-3]
+    elsif place == "C"
+      squared_array[-2]
+    elsif place == "D"
+      squared_array[-1]
+    end
+  end
+
 
   def char_map
     {1 => "a",
@@ -50,93 +144,6 @@ class Enigma
     }
   end
 
-  def array
-    array = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-      "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3",
-      "4", "5", "6", "7", "8", "9", "0", " ", ".", ","]
-  end
 
-
-  def key_generator
-    rand.to_s[2..6]
-  end
-
-  def key_rotation(place)
-    key_array = @key.to_s.chars
-    if place == "A"
-      key_array[0] + key_array[1]
-    elsif place == "B"
-      key_array[1] + key_array[2]
-    elsif place == "C"
-      key_array[2] + key_array[3]
-    elsif place == "D"
-      key_array[3] + key_array[4]
-    end
-  end
-
-  def offsets(place)
-    date = Date.today.strftime("%m%d%y")
-    squared = date.to_i ** 2
-    squared_array = squared.to_s.chars
-    if place == "A"
-      squared_array[-4]
-    elsif place == "B"
-      squared_array[-3]
-    elsif place == "C"
-      squared_array[-2]
-    elsif place == "D"
-      squared_array[-1]
-    end
-  end
-
-  def total_rotation(keys)
-    keys.map do |key|
-      key_rotation(key).to_i + offsets(key).to_i
-    end
-  end
-
-  def key_index(message)
-    message_array = message.chars
-    index_keys = []
-    message_array.each_index do |index|
-      if index % 4 == 0
-        index_keys << "A"
-      elsif index % 4 == 1
-        index_keys << "B"
-      elsif index % 4 == 2
-        index_keys << "C"
-      elsif index % 4 == 3
-        index_keys << "D"
-      end
-    end
-    index_keys
-  end
-
-  def message_keys(message)
-    character_array = message.chars
-    reverse = char_map.invert
-    character_array.map do |character|
-      index = reverse [character]
-    end
-  end
-
-  def get_new_keys(message)
-    x = key_index(message)
-    y = total_rotation(x)
-    z = message_keys(message)
-    y.map.with_index do |m, i|
-     (m + z[i].to_i) % 39
-    end
-  end
-
-  def encrypt(message)
-      keys = get_new_keys(message)
-      keys.map do |key|
-        char_map[key]
-      end.join
-    end
-
-
-
-
+  binding.pry
 end
