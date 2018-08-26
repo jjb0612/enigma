@@ -2,49 +2,49 @@ require 'pry'
 require 'date'
 
 class Enigma
-  attr_reader :key
-              :date
+  attr_reader :key,
+              :set_date
 
-  def initialize (key = rand.to_s[2..6], date = Date.today.strftime("%m%d%y"))
+  def initialize (key = rand.to_s[2..6], set_date = Date.today.strftime("%m%d%y"))
     @key      = key
-    @date     = date
+    @set_date     = set_date
   end
 
-  def encrypt(message, key = @key, date = @date)
-    keys = get_new_encryption_keys(message, key, date)
+  def encrypt(message, key = @key, set_date = @set_date)
+    keys = get_new_encryption_keys(message, key, set_date)
     keys.map do |key|
       char_map[key]
     end.join
   end
 
-  def decrypt(message, key = @key, date = @date)
-    keys = get_new_decryption_keys(message, key, date)
+  def decrypt(message, key = @key, set_date = @set_date)
+    keys = get_new_decryption_keys(message, key, set_date)
     keys.map do |key|
       char_map[key]
     end.join
   end
 
-  def get_new_encryption_keys(message, key, date)
+  def get_new_encryption_keys(message, key, set_date)
     coded_index = key_index(message)
-    rotation = total_rotation(coded_index, key, date)
+    rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
     rotation.map.with_index do |m, i|
       (m + mapped_keys[i].to_i) % 39
     end
   end
 
-  def get_new_decryption_keys(message, key, date)
+  def get_new_decryption_keys(message, key, set_date)
     coded_index = key_index(message)
-    rotation = total_rotation(coded_index, key, date)
+    rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
     rotation.map.with_index do |m, i|
       (mapped_keys[i].to_i - m) % 39
     end
   end
 
-  def total_rotation(places, key, date)
+  def total_rotation(places, key, set_date)
     places.map do |place|
-      key_rotation(place, key).to_i + offsets(place, date).to_i
+      key_rotation(place, key).to_i + offsets(place, set_date).to_i
     end
   end
 
@@ -86,8 +86,8 @@ class Enigma
     end
   end
 
-  def offsets(place, date)
-    squared = date.to_i ** 2
+  def offsets(place, set_date)
+    squared = set_date.to_i ** 2
     squared_array = squared.to_s.chars
     if place == "A"
       squared_array[-4]
