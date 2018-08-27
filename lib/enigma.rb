@@ -24,6 +24,25 @@ class Enigma
     end.join
   end
 
+  def crack(output, set_date = @set_date)
+    output_array = output.chars
+    last_seven = output_array[-7..-1]
+    reverse = char_map.invert
+    keys = last_seven.map do |last|
+      reverse[last]
+    end
+    keys
+  end
+
+  def keys_for_end
+    reverse = char_map.invert
+    end_array = "..end..".chars
+    end_keys = end_array.map do |array|
+      reverse[array]
+    end
+    end_keys
+  end
+
   def get_new_encryption_keys(message, key, set_date)
     coded_index = key_index(message)
     rotation = total_rotation(coded_index, key, set_date)
