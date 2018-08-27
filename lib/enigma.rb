@@ -32,6 +32,7 @@ class Enigma
       reverse[last]
     end
     keys
+
   end
 
   def keys_for_end
@@ -41,6 +42,52 @@ class Enigma
       reverse[array]
     end
     end_keys
+  end
+
+  def get_new_crack_keys(output)
+    crack_keys = key_index(output)
+    crack_keys[-7..-1]
+  end
+
+  def calculate_difference(output, set_date = @set_date)
+    end_keys = keys_for_end
+    crack_keys = crack(output, set_date)
+    crack_keys.map.with_index do |m, i|
+      if (end_keys[i] - m) < 39
+        (end_keys[i] - m) + 39
+      else
+        end_keys[i] - m
+      end
+    end
+  end
+
+  def crack_date(set_date)
+    squared = set_date.to_i ** 2
+    keys = squared.to_s.chars[-4..-1]
+  end
+
+  def get_date_keys(output, set_date)
+    get_keys = get_new_crack_keys(output)
+    date_array = crack_date(set_date)
+    get_keys.map do |key|
+      if key == "A"
+        date_array[0]
+      elsif key == "B"
+        date_array[1]
+      elsif key == "C"
+        date_array[2]
+      elsif key == "D"
+        date_array[3]
+      end
+    end
+  end
+
+  def date_output(output, set_date)
+    date_keys = get_date_keys(output, set_date)
+    output_keys = calculate_difference(output, set_date)
+    date_keys.map.with_index do |m, i|
+      ((output_keys[i]) - m.to_i)
+    end
   end
 
   def get_new_encryption_keys(message, key, set_date)
