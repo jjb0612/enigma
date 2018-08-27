@@ -145,5 +145,5 @@ class Enigma
   end
 
 
-  binding.pry
+  
 end
