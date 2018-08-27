@@ -26,7 +26,7 @@ class Enigma
 
   def crack(output, set_date = @set_date)
     output_array = output.chars
-    last_seven = output_array[-7..-1]
+    last_seven = output_array[-6..-3]
     reverse = char_map.invert
     keys = last_seven.map do |last|
       reverse[last]
@@ -46,7 +46,7 @@ class Enigma
 
   def get_new_crack_keys(output)
     crack_keys = key_index(output)
-    crack_keys[-7..-1]
+    crack_keys[-6..-3]
   end
 
   def calculate_difference(output, set_date = @set_date)
@@ -84,9 +84,9 @@ class Enigma
 
   def date_output(output, set_date)
     date_keys = get_date_keys(output, set_date)
-    output_keys = calculate_difference(output, set_date)
+    key_end = keys_for_end
     date_keys.map.with_index do |m, i|
-      ((output_keys[i]) - m.to_i)
+      ((key_end[i]) + m.to_i)
     end
   end
 
