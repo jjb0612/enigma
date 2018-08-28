@@ -1,5 +1,7 @@
 require 'pry'
 require 'date'
+require './lib/enigma_offsets'
+require './lib/key_rotation'
 
 class Enigma
   attr_reader :key,
@@ -69,11 +71,6 @@ class Enigma
     crack_keys[-6..-3]
   end
 
-  def last_four_digits_of_date_squared(set_date = @set_date)
-    squared = (set_date.to_i) ** 2
-    squared.to_s.chars[-4..-1]
-  end
-
   def assign_date_keys_to_output(output, set_date = @set_date)
     get_keys = lettered_keys_for_end_in_output(output)
     date_array = last_four_digits_of_date_squared(set_date)
@@ -117,8 +114,10 @@ class Enigma
   end
 
   def total_rotation(places, key, set_date = @set_date)
+    o = OffSets.new
+    k = KeyRotation.new
     places.map do |place|
-      key_rotation(place, key).to_i + offsets(place, set_date).to_i
+      k.key_rotation(place, key).to_i + o.offsets(place, set_date).to_i
     end
   end
 
@@ -146,33 +145,6 @@ class Enigma
       index = reverse [character]
     end
   end
-
-  def key_rotation(place, key)
-    key_array = key.to_s.chars
-    if place == "A"
-      key_array[0] + key_array[1]
-    elsif place == "B"
-      key_array[1] + key_array[2]
-    elsif place == "C"
-      key_array[2] + key_array[3]
-    elsif place == "D"
-      key_array[3] + key_array[4]
-    end
-  end
-
-  def offsets(place, set_date = @set_date)
-    squared_array = last_four_digits_of_date_squared(set_date)
-    if place == "A"
-      squared_array[-4]
-    elsif place == "B"
-      squared_array[-3]
-    elsif place == "C"
-      squared_array[-2]
-    elsif place == "D"
-      squared_array[-1]
-    end
-  end
-
 
   def char_map
     {1 => "a",
