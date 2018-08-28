@@ -18,38 +18,6 @@ class EnigmaTest < Minitest::Test
     assert_equal "082518", e.set_date
   end
 
-  def test_key_rotation
-    e = Enigma.new
-
-    actual = e.key_rotation("A", "12345")
-    assert_equal "12", actual
-
-    actual = e.key_rotation("B", "12345")
-    assert_equal "23", actual
-
-    actual = e.key_rotation("C", "12345")
-    assert_equal "34", actual
-
-    actual = e.key_rotation("D", "12345")
-    assert_equal "45", actual
-  end
-
-  def test_offset_rotation
-    e = Enigma.new
-
-    actual = e.offsets("A", "082518")
-    assert_equal "0", actual
-
-    actual = e.offsets("B", "082518")
-    assert_equal "3", actual
-
-    actual = e.offsets("C", "082518")
-    assert_equal "2", actual
-
-    actual = e.offsets("D", "082518")
-    assert_equal "4", actual
-  end
-
   def test_total_rotation
     e = Enigma.new
 
