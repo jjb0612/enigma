@@ -6,7 +6,7 @@ class Enigma
               :set_date
 
   def initialize (key = rand.to_s[2..6], set_date = Date.today.strftime("%m%d%y"))
-    @key      = key
+    @key          = key
     @set_date     = set_date
   end
 
@@ -24,7 +24,81 @@ class Enigma
     end.join
   end
 
-  def get_new_encryption_keys(message, key, set_date)
+  def rotate_to_abcd (output, set_date = @set_date)
+    differences = calculate_difference(output, set_date)
+    letters = lettered_keys_for_end_in_output(output)
+    if letters[0] == "B"
+      differences.rotate(-1)
+    elsif letters[0] == "C"
+      differences.rotate(-2)
+    elsif letters[0] == "D"
+      differences.rotate(-3)
+    else
+      differences
+    end
+  end
+
+  def calculate_difference(output, set_date = @set_date)
+    end_keys = ending_output_shift(output, set_date)
+    crack_keys = numbered_keys_for_end_in_output(output, set_date)
+    end_keys.map.with_index do |m, i|
+      (crack_keys[i] - m)
+    end
+  end
+
+  def numbered_keys_for_end_in_output(output, set_date = @set_date)
+    output_array = output.chars
+    last_seven = output_array[-6..-3]
+    reverse = char_map.invert
+    keys = last_seven.map do |last|
+      reverse[last]
+    end
+  end
+
+  def normal_keys_for_end
+    reverse = char_map.invert
+    end_array = "..end..".chars
+    end_keys = end_array.map do |array|
+      reverse[array]
+    end
+    end_keys[-6..-3]
+  end
+
+  def lettered_keys_for_end_in_output(output)
+    crack_keys = key_index(output)
+    crack_keys[-6..-3]
+  end
+
+  def last_four_digits_of_date_squared(set_date = @set_date)
+    squared = (set_date.to_i) ** 2
+    squared.to_s.chars[-4..-1]
+  end
+
+  def assign_date_keys_to_output(output, set_date = @set_date)
+    get_keys = lettered_keys_for_end_in_output(output)
+    date_array = last_four_digits_of_date_squared(set_date)
+    get_keys.map do |key|
+      if key == "A"
+        date_array[0]
+      elsif key == "B"
+        date_array[1]
+      elsif key == "C"
+        date_array[2]
+      elsif key == "D"
+        date_array[3]
+      end
+    end
+  end
+
+  def ending_output_shift(output, set_date = @set_date)
+    date_keys = assign_date_keys_to_output(output, set_date)
+    key_end = normal_keys_for_end
+    date_keys.map.with_index do |m, i|
+      ((key_end[i]) + m.to_i)
+    end
+  end
+
+  def get_new_encryption_keys(message, key, set_date = @set_date)
     coded_index = key_index(message)
     rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
@@ -33,7 +107,7 @@ class Enigma
     end
   end
 
-  def get_new_decryption_keys(message, key, set_date)
+  def get_new_decryption_keys(message, key, set_date = @set_date)
     coded_index = key_index(message)
     rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
@@ -42,7 +116,7 @@ class Enigma
     end
   end
 
-  def total_rotation(places, key, set_date)
+  def total_rotation(places, key, set_date = @set_date)
     places.map do |place|
       key_rotation(place, key).to_i + offsets(place, set_date).to_i
     end
@@ -86,9 +160,8 @@ class Enigma
     end
   end
 
-  def offsets(place, set_date)
-    squared = set_date.to_i ** 2
-    squared_array = squared.to_s.chars
+  def offsets(place, set_date = @set_date)
+    squared_array = last_four_digits_of_date_squared(set_date)
     if place == "A"
       squared_array[-4]
     elsif place == "B"
@@ -143,7 +216,5 @@ class Enigma
       39 => ","
     }
   end
-
-
-
+  binding.pry
 end
