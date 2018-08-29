@@ -7,7 +7,7 @@ class Enigma
   attr_reader :key,
               :set_date
 
-  def initialize (key = rand.to_s[2..6], set_date = Date.today.strftime("%m%d%y"))
+  def initialize (key = rand.to_s[2..6], set_date = Date.today.strftime("%m%d%y").to_i)
     @key          = key
     @set_date     = set_date
   end
@@ -72,8 +72,9 @@ class Enigma
   end
 
   def assign_date_keys_to_output(output, set_date = @set_date)
+    x = OffSets.new
     get_keys = lettered_keys_for_end_in_output(output)
-    date_array = last_four_digits_of_date_squared(set_date)
+    date_array = x.last_four_digits_of_date_squared(set_date)
     get_keys.map do |key|
       if key == "A"
         date_array[0]
@@ -95,7 +96,7 @@ class Enigma
     end
   end
 
-  def get_new_encryption_keys(message, key, set_date = @set_date)
+  def get_new_encryption_keys(message, key, set_date)
     coded_index = key_index(message)
     rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
@@ -104,7 +105,7 @@ class Enigma
     end
   end
 
-  def get_new_decryption_keys(message, key, set_date = @set_date)
+  def get_new_decryption_keys(message, key, set_date)
     coded_index = key_index(message)
     rotation = total_rotation(coded_index, key, set_date)
     mapped_keys = message_keys(message)
@@ -113,7 +114,7 @@ class Enigma
     end
   end
 
-  def total_rotation(places, key, set_date = @set_date)
+  def total_rotation(places, key, set_date)
     o = OffSets.new
     k = KeyRotation.new
     places.map do |place|
